@@ -10,5 +10,5 @@ public interface SmartCell {
      * @return the answer when the Cell can reply to the question
      *         or null.
      */
-    public abstract String ask(Tweet question);
+    public String ask(Tweet question);
 }

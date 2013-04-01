@@ -1,6 +1,6 @@
 package fr.univaix.iut.pokebattle.twitter;
 
-import fr.univaix.iut.pokebattle.bot.Bot;
+import fr.univaix.iut.pokebattle.bot.TimedBot;
 import fr.univaix.iut.pokebattle.tuse.Credentials;
 import fr.univaix.iut.pokebattle.tuse.TwitterUserStreamEasy;
 import fr.univaix.iut.pokebattle.tuse.UserStreamAdapter;
@@ -11,13 +11,15 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserStreamListener;
 
+import java.util.concurrent.DelayQueue;
+
 public class TwitterUserStreamEasyBuilder {
-    private final static Logger logger = LoggerFactory.getLogger(TwitterBot.class);
+    private final static Logger logger = LoggerFactory.getLogger(TwitterUserStreamEasyBuilder.class);
     private Credentials credentials;
     private Twitter twitter;
-    private Bot bot;
+    private TimedBot bot;
 
-    public TwitterUserStreamEasyBuilder(Credentials credentials, Twitter twitter, Bot bot) {
+    public TwitterUserStreamEasyBuilder(Credentials credentials, Twitter twitter, TimedBot bot) {
         this.credentials = credentials;
         this.twitter = twitter;
         this.bot = bot;
@@ -38,16 +40,18 @@ public class TwitterUserStreamEasyBuilder {
         return new TwitterUserStreamEasy(listener, credentials);
     }
 
-    private void processNewQuestion(Status status, Bot bot) throws TwitterException {
+    private void processNewQuestion(Status status, TimedBot bot) throws TwitterException {
         if (isNotANewQuestion(status)) {
             logger.info("Ignored status change");
             return;
         }
 
-        String response = bot.ask(new Tweet(status.getUser().getScreenName(), status.getText()));
+        Answer answer = bot.askWithTime(new Tweet(status.getUser().getScreenName(), status.getText()));
 
-        if (response != null) {
-            twitter.updateStatus(response);
+        if (answer != null) {
+            DelayQueue<Answer> delayQueue = bot.getDelayQueue();
+            delayQueue.put(answer);
+            logger.info("Answer posted to the event queue");
         }
     }
 

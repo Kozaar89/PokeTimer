@@ -1,16 +1,17 @@
 package fr.univaix.iut.pokebattle.smartcell;
 
+import fr.univaix.iut.pokebattle.twitter.Answer;
 import fr.univaix.iut.pokebattle.twitter.Tweet;
+import org.joda.time.DateTime;
 
 /**
  * Reply to all.
  */
-public class PokemonCriesCell implements SmartCell {
-
-    public String ask(Tweet question) {
+public class PokemonCriesCell extends AbtractTimedSmartCell {
+    @Override
+    public Answer askWithTime(Tweet question) {
         if (question.getScreenName() != null)
-            return "@" + question.getScreenName() + " Pika pika";
-        return "Pika pika";
+            return new Answer("@" + question.getScreenName() + " Pika pika", DateTime.now().plusSeconds(20));
+        return new Answer("Pika pika", DateTime.now().plusSeconds(20));
     }
-
 }
