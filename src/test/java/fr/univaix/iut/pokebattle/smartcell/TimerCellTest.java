@@ -19,7 +19,7 @@ public class TimerCellTest {
         TimerCell timerCell = new TimerCell();
         Tweet tweet = new Tweet("nedseb", "#WakeMeUp 3 Min Plop Plop");
         Answer answer = timerCell.askWithTime(tweet);
-        assertThat(answer.getDelay(TimeUnit.MINUTES)).isEqualTo(2);
+        assertThat(answer.getDelay(TimeUnit.MINUTES)).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
         assertThat(answer.getText()).isEqualTo("@nedseb #DringDring Plop Plop");
     }
 }

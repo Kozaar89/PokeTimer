@@ -14,7 +14,7 @@ public class TimerBotTest {
         TimerBot timerBot = new TimerBot();
         Tweet tweet = new Tweet("nedseb", "#WakeMeUp 3 Min Plop Plop");
         Answer answer = timerBot.askWithTime(tweet);
-        assertThat(answer.getDelay(TimeUnit.MINUTES)).isEqualTo(2);
+        assertThat(answer.getDelay(TimeUnit.MINUTES)).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
         assertThat(answer.getText()).isEqualTo("@nedseb #DringDring Plop Plop");
 
         tweet = new Tweet("nedseb", "coucou");
